@@ -1,15 +1,17 @@
 package com.udacity.vehicles.api;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.hateoas.VndErrors;
+import org.springframework.hateoas.mediatype.vnderrors.VndErrors;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implements the Error controller related to any errors handled by the Vehicles API
@@ -22,7 +24,7 @@ public class ErrorController extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
-            HttpHeaders headers, HttpStatus status,
+            HttpHeaders headers, HttpStatusCode status,
             WebRequest request) {
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -33,5 +35,5 @@ public class ErrorController extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError(DEFAULT_VALIDATION_FAILED_MESSAGE, errors);
         return handleExceptionInternal(ex, apiError, headers, HttpStatus.BAD_REQUEST, request);
     }
-}
 
+}
