@@ -3,21 +3,15 @@ package com.udacity.vehicles.client.prices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * Implements a class to interface with the Pricing Client for price data.
  */
-@Component
-public class PriceClient {
-
-    private static final Logger log = LoggerFactory.getLogger(PriceClient.class);
-
-    private final WebClient client;
-
-    public PriceClient(WebClient pricing) {
-        this.client = pricing;
-    }
+@FeignClient(name = "${pricing.serviceName}", path="/services/price")
+public interface PriceClient {
 
     // In a real-world application we'll want to add some resilience
     // to this method with retries/CB/failover capabilities
@@ -30,22 +24,7 @@ public class PriceClient {
      *   error message that the vehicle ID is invalid, or note that the
      *   service is down.
      */
-    public String getPrice(Long vehicleId) {
-        try {
-            Price price = client
-                    .get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("services/price/")
-                            .queryParam("vehicleId", vehicleId)
-                            .build()
-                    )
-                    .retrieve().bodyToMono(Price.class).block();
+    @GetMapping
+    public Price get(@RequestParam Long vehicleId);
 
-            return String.format("%s %s", price.getCurrency(), price.getPrice());
-
-        } catch (Exception e) {
-            log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
-        }
-        return "(consult price)";
-    }
 }

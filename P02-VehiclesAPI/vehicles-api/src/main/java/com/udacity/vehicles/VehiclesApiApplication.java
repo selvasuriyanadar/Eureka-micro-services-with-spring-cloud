@@ -2,6 +2,7 @@ package com.udacity.vehicles;
 
 import com.udacity.vehicles.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles.domain.manufacturer.ManufacturerRepository;
+import com.udacity.vehicles.client.prices.PriceClient;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Launches a Spring Boot application for the Vehicles API,
@@ -18,6 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
  */
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableFeignClients
 public class VehiclesApiApplication {
 
     public static void main(String[] args) {
@@ -30,13 +33,14 @@ public class VehiclesApiApplication {
      * @return the car manufacturers to add to the related repository
      */
     @Bean
-    CommandLineRunner initDatabase(ManufacturerRepository repository) {
+    CommandLineRunner initDatabase(ManufacturerRepository repository, PriceClient priceClient) {
         return args -> {
             repository.save(new Manufacturer(100, "Audi"));
             repository.save(new Manufacturer(101, "Chevrolet"));
             repository.save(new Manufacturer(102, "Ford"));
             repository.save(new Manufacturer(103, "BMW"));
             repository.save(new Manufacturer(104, "Dodge"));
+            System.out.println("the price is " + priceClient.get(2L).getCurrency());
         };
     }
 
@@ -52,16 +56,6 @@ public class VehiclesApiApplication {
      */
     @Bean(name="maps")
     public WebClient webClientMaps(@Value("${maps.endpoint}") String endpoint) {
-        return WebClient.create(endpoint);
-    }
-
-    /**
-     * Web Client for the pricing API
-     * @param endpoint where to communicate for the pricing API
-     * @return created pricing endpoint
-     */
-    @Bean(name="pricing")
-    public WebClient webClientPricing(@Value("${pricing.endpoint}") String endpoint) {
         return WebClient.create(endpoint);
     }
 

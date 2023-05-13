@@ -1,7 +1,7 @@
 maps:
   endpoint: http://localhost:9191
 pricing:
-  endpoint: http://localhost:8084
+  serviceName: pricing-service
 
 spring:
   application:

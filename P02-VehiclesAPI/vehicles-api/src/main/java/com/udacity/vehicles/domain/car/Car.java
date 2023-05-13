@@ -2,7 +2,7 @@ package com.udacity.vehicles.domain.car;
 
 import com.udacity.vehicles.domain.Condition;
 import com.udacity.vehicles.domain.Location;
-import java.time.LocalDateTime;
+
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -16,6 +16,8 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 /**
  * Declares the Car class, related variables and methods.
