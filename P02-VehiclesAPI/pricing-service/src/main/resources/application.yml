@@ -1,6 +1,11 @@
 spring:
   application:
     name: pricing-service
+
+  data:
+    rest:
+      basePath: /services
+
 eureka:
   client:
     serviceUrl:

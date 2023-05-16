@@ -2,6 +2,7 @@ package com.udacity.pricing;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Creates a Spring Boot Application to run the Pricing Service.
