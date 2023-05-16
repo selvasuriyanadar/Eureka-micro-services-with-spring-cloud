@@ -36,13 +36,17 @@ public class PriceEventHandler {
     @Transactional
     public void fetchCurrentPrice(Price newPrice) {
         this.currentPrice = Util.retrieveCurrentObject(entityManager.unwrap(Session.class), priceRepository, newPrice, Price::getPriceId);
+        if (this.currentPrice.isPresent()) {
+            Util.mapIfDestinationNullModifying(this.currentPrice.get(), newPrice, Price.class);
+        }
     }
 
     @HandleAfterCreate
     @HandleAfterSave
     public void generateOnSave(Price newPrice) {
         if (!this.currentPrice.isPresent()
-          || !this.currentPrice.get().getVehicleId().equals(newPrice.getVehicleId())) {
+          || !this.currentPrice.get().getVehicleId().equals(newPrice.getVehicleId())
+          || newPrice.getUpdatePrice()) {
             newPrice.setPrice(PriceLogic.randomPrice());
         }
         priceRepository.save(newPrice);

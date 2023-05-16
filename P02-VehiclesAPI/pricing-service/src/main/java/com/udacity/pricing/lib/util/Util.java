@@ -3,6 +3,7 @@ package com.udacity.pricing.util;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.hibernate.Session;
+import org.hibernate.FlushMode;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.Conditions;
@@ -35,6 +36,11 @@ public class Util {
         return temp;
     }
 
+    public static <D> D mapIfDestinationNullModifying(D source, D destination, Class<D> typeClass) {
+        getSimpleMapper().map(mapIfDestinationNull(source, destination, typeClass), destination);
+        return destination;
+    }
+
     public interface BaseRestRepository<D, ID> extends Repository<D, ID> {
 
         public D save(D price);
@@ -59,6 +65,7 @@ public class Util {
             return Optional.empty();
         }
 
+        session.setHibernateFlushMode(FlushMode.MANUAL);
         session.detach(newObject);
         Optional<D> current = baseRestRepository.findById(getId.get(newObject));
         if (current.isPresent()) {

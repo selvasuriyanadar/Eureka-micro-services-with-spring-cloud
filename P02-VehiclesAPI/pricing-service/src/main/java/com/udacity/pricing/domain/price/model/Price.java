@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Value;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -33,6 +34,9 @@ public class Price {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BigDecimal price;
+
+    @Transient
+    private boolean updatePrice = false;
 
     @Override
     public String toString() {
@@ -69,6 +73,14 @@ public class Price {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public boolean getUpdatePrice() {
+        return updatePrice;
+    }
+
+    public void setUpdatePrice(boolean updatePrice) {
+        this.updatePrice = updatePrice;
     }
 
 }
