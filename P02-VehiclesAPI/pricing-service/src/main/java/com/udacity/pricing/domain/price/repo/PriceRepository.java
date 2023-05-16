@@ -28,7 +28,6 @@ public interface PriceRepository extends BaseRestRepository<Price, Long> {
     @RestResource(exported = false)
     public boolean existsByVehicleIdAndPriceIdNot(Long vehicleId, Long priceId);
 
-    @RestResource(exported = false)
     public boolean existsByVehicleId(Long vehicleId);
 
 }
