@@ -1,4 +1,4 @@
-package com.udacity.vehicles.service;
+package com.udacity.vehicles.domain.car.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

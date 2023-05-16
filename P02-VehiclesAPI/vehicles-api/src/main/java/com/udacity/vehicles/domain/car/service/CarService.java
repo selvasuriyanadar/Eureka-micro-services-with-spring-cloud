@@ -1,7 +1,8 @@
-package com.udacity.vehicles.service;
+package com.udacity.vehicles.domain.car.service;
 
-import com.udacity.vehicles.domain.car.Car;
-import com.udacity.vehicles.domain.car.CarRepository;
+import com.udacity.vehicles.domain.car.model.Car;
+import com.udacity.vehicles.domain.car.repo.CarRepository;
+
 import java.util.List;
 import org.springframework.stereotype.Service;
 

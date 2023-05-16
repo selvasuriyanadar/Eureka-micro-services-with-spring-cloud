@@ -1,8 +1,10 @@
 package com.udacity.vehicles;
 
-import com.udacity.vehicles.domain.manufacturer.Manufacturer;
-import com.udacity.vehicles.domain.manufacturer.ManufacturerRepository;
+import com.udacity.vehicles.domain.manufacturer.model.Manufacturer;
+import com.udacity.vehicles.domain.manufacturer.repo.ManufacturerRepository;
 import com.udacity.vehicles.client.prices.PriceClient;
+import com.udacity.vehicles.client.prices.Price;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+
+import java.util.*;
 
 /**
  * Launches a Spring Boot application for the Vehicles API,
@@ -40,7 +44,6 @@ public class VehiclesApiApplication {
             repository.save(new Manufacturer(102, "Ford"));
             repository.save(new Manufacturer(103, "BMW"));
             repository.save(new Manufacturer(104, "Dodge"));
-            System.out.println("the price is " + priceClient.get(2L).getCurrency());
         };
     }
 

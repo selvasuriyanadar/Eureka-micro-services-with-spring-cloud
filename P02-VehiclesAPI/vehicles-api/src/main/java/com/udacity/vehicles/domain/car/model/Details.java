@@ -1,6 +1,7 @@
-package com.udacity.vehicles.domain.car;
+package com.udacity.vehicles.domain.car.model;
 
-import com.udacity.vehicles.domain.manufacturer.Manufacturer;
+import com.udacity.vehicles.domain.manufacturer.model.Manufacturer;
+
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;

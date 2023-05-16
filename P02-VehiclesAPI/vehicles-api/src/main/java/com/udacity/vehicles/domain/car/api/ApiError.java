@@ -1,4 +1,4 @@
-package com.udacity.vehicles.api;
+package com.udacity.vehicles.domain.car.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;

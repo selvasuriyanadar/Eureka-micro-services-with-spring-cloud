@@ -1,4 +1,4 @@
-package com.udacity.vehicles.domain.manufacturer;
+package com.udacity.vehicles.domain.manufacturer.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -13,14 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.client.prices.PriceClient;
-import com.udacity.vehicles.domain.Condition;
-import com.udacity.vehicles.domain.Location;
-import com.udacity.vehicles.domain.car.Car;
-import com.udacity.vehicles.domain.car.Details;
-import com.udacity.vehicles.domain.manufacturer.Manufacturer;
-import com.udacity.vehicles.service.CarService;
-import java.net.URI;
-import java.util.Collections;
+import com.udacity.vehicles.domain.car.model.Condition;
+import com.udacity.vehicles.domain.car.model.Location;
+import com.udacity.vehicles.domain.car.model.Car;
+import com.udacity.vehicles.domain.car.model.Details;
+import com.udacity.vehicles.domain.manufacturer.model.Manufacturer;
+import com.udacity.vehicles.domain.car.service.CarService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,9 @@ import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.net.URI;
+import java.util.Collections;
 
 /**
  * Implements testing of the CarController class.

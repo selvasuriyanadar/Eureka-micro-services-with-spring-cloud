@@ -1,7 +1,4 @@
-package com.udacity.vehicles.domain.car;
-
-import com.udacity.vehicles.domain.Condition;
-import com.udacity.vehicles.domain.Location;
+package com.udacity.vehicles.domain.car.model;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

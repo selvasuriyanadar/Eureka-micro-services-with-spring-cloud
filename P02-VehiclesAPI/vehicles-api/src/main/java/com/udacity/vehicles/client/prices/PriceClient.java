@@ -1,5 +1,7 @@
 package com.udacity.vehicles.client.prices;
 
+import com.udacity.vehicles.client.FeignClientConfig;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -7,10 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.*;
+
 /**
  * Implements a class to interface with the Pricing Client for price data.
  */
-@FeignClient(name = "${pricing.serviceName}", path="/services/price")
+@FeignClient(name = "${pricing.serviceName}", path="/services/price", configuration=FeignClientConfig.class)
 public interface PriceClient {
 
     // In a real-world application we'll want to add some resilience
@@ -24,7 +28,7 @@ public interface PriceClient {
      *   error message that the vehicle ID is invalid, or note that the
      *   service is down.
      */
-    @GetMapping
+    @GetMapping("/search/findByVehicleId")
     public Price get(@RequestParam Long vehicleId);
 
 }

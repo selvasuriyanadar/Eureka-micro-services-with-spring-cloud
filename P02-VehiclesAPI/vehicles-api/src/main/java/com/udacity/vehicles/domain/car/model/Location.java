@@ -1,4 +1,4 @@
-package com.udacity.vehicles.domain;
+package com.udacity.vehicles.domain.car.model;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Transient;

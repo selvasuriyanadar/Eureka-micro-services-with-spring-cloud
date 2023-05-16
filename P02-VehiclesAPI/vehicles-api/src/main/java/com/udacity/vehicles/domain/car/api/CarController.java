@@ -1,7 +1,7 @@
-package com.udacity.vehicles.api;
+package com.udacity.vehicles.domain.car.api;
 
-import com.udacity.vehicles.domain.car.Car;
-import com.udacity.vehicles.service.CarService;
+import com.udacity.vehicles.domain.car.model.Car;
+import com.udacity.vehicles.domain.car.service.CarService;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;

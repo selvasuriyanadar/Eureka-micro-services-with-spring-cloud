@@ -1,4 +1,4 @@
-package com.udacity.vehicles.api;
+package com.udacity.vehicles.domain.car.api;
 
 import org.springframework.hateoas.mediatype.vnderrors.VndErrors;
 import org.springframework.http.HttpHeaders;
