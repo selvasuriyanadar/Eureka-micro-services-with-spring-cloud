@@ -38,10 +38,12 @@ public class Car {
     private Condition condition;
 
     @Valid
+    @NotNull
     @Embedded
     private Details details = new Details();
 
     @Valid
+    @NotNull
     @Embedded
     private Location location = new Location(0d, 0d);
 

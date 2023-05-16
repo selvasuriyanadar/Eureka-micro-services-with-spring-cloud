@@ -4,8 +4,10 @@ import com.udacity.vehicles.domain.manufacturer.model.Manufacturer;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 
 /**
  * Declares the additional detail variables for each Car object,
@@ -22,6 +24,7 @@ public class Details {
 
     @NotNull
     @ManyToOne
+    @JoinColumn(name="code")
     private Manufacturer manufacturer;
 
     private Integer numberOfDoors;

@@ -5,17 +5,19 @@ import java.math.BigDecimal;
 /**
  * Represents the price of a given vehicle, including currency.
  */
-public class Price {
+public class PriceFullResponse {
 
+    private Long priceId;
     private String currency;
     private BigDecimal price;
     private Long vehicleId;
 
-    public Price() {
+    public Long getPriceId() {
+        return priceId;
     }
 
-    public Price(Long vehicleId) {
-        this.vehicleId = vehicleId;
+    public void setPriceId(Long priceId) {
+        this.priceId = priceId;
     }
 
     public String getCurrency() {

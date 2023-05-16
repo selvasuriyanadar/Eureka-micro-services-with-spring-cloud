@@ -2,10 +2,12 @@ package com.udacity.vehicles;
 
 import com.udacity.vehicles.domain.manufacturer.model.Manufacturer;
 import com.udacity.vehicles.domain.manufacturer.repo.ManufacturerRepository;
+import com.udacity.vehicles.domain.car.model.Car;
 import com.udacity.vehicles.client.prices.PriceClient;
 import com.udacity.vehicles.client.prices.Price;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -49,7 +51,8 @@ public class VehiclesApiApplication {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper;
     }
 
     /**

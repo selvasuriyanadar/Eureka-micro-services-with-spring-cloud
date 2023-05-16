@@ -33,7 +33,7 @@ public class MapsClient {
      * @return An updated location including street, city, state and zip,
      *   or an exception message noting the Maps service is down
      */
-    public Location getAddress(Location location) {
+    public Location fillAddressOptional(Location location) {
         try {
             Address address = client
                     .get()
@@ -53,4 +53,5 @@ public class MapsClient {
             return location;
         }
     }
+
 }
