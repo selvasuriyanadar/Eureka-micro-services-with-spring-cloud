@@ -10,13 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.MediaType;
 
 import java.util.*;
 
 /**
  * Implements a class to interface with the Pricing Client for price data.
  */
-@FeignClient(name = "${pricing.serviceName}", path="/services/price")
+@FeignClient(name="${pricing.serviceName}", path="/services/price")
 public interface PriceClient {
 
     static final Logger log = LoggerFactory.getLogger(PriceClient.class);
@@ -33,10 +34,10 @@ public interface PriceClient {
      *   service is down.
      */
     @GetMapping("/search/findByVehicleId")
-    public PriceFullResponse getFullResponse(@RequestParam Long vehicleId, @RequestParam String projection);
+    public PriceFull getFull(@RequestParam Long vehicleId, @RequestParam String projection);
 
-    default PriceFullResponse getFullResponse(Long vehicleId) {
-        return getFullResponse(vehicleId, "priceFullResponse");
+    default PriceFull getFull(Long vehicleId) {
+        return getFull(vehicleId, "priceFullResponse");
     }
 
     @GetMapping("/search/findByVehicleId")
@@ -48,8 +49,8 @@ public interface PriceClient {
     @PostMapping
     public Price post(@RequestBody Price price);
 
-    @PutMapping("/{priceId}")
-    public Price put(@PathVariable Long priceId, @RequestBody Price price);
+    @PutMapping(value="/{priceId}", consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+    public Price patch(@PathVariable("priceId") Long priceId, @RequestBody PriceFull price);
 
     public static class CouldNotUpdateVehiclePrice extends RuntimeException {
     }
@@ -57,7 +58,7 @@ public interface PriceClient {
     default Price updateVehiclePrice(Long vehicleId) {
         try {
             if (exists(vehicleId)) {
-                return put(getFullResponse(vehicleId).getPriceId(), new Price(vehicleId));
+                return patch(getFull(vehicleId).getPriceId(), new PriceFull().updatePrice());
             }
             else {
                 return post(new Price(vehicleId));

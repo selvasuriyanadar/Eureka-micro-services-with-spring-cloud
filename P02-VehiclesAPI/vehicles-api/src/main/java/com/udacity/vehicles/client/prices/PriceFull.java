@@ -5,12 +5,18 @@ import java.math.BigDecimal;
 /**
  * Represents the price of a given vehicle, including currency.
  */
-public class PriceFullResponse {
+public class PriceFull {
 
     private Long priceId;
     private String currency;
     private BigDecimal price;
     private Long vehicleId;
+    private boolean updatePrice = false;
+
+    public PriceFull updatePrice() {
+        this.updatePrice = true;
+        return this;
+    }
 
     public Long getPriceId() {
         return priceId;
@@ -42,6 +48,14 @@ public class PriceFullResponse {
 
     public void setVehicleId(Long vehicleId) {
         this.vehicleId = vehicleId;
+    }
+
+    public boolean getUpdatePrice() {
+        return updatePrice;
+    }
+
+    public void setUpdatePrice(boolean updatePrice) {
+        this.updatePrice = updatePrice;
     }
 
 }
