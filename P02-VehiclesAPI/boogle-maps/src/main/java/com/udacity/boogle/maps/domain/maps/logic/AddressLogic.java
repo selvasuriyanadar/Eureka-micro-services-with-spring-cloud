@@ -19,7 +19,8 @@ public class AddressLogic {
         }
 
         if (doesAnotherAddressExistForTheLocation.exist(address.getLat(), address.getLon())) {
-            errors.reject("data.duplicate", "Already an Address entry for this Location exist.");
+            errors.rejectValue("lat", "data.duplicate", "Already an Address entry for this Location exist.");
+            errors.rejectValue("lon", "data.duplicate", "Already an Address entry for this Location exist.");
         }
     }
 

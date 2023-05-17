@@ -71,7 +71,8 @@ public class CarService {
         }
 
         Car newlyCreatedCar = repository.save(car);
-        priceClient.updateVehiclePrice(car.getId());
+        priceClient.updateVehiclePrice(newlyCreatedCar.getId());
+        mapsClient.updateAddress(newlyCreatedCar.getLocation().getLat(), newlyCreatedCar.getLocation().getLon());
         return newlyCreatedCar;
     }
 

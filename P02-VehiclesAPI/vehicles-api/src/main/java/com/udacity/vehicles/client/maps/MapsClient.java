@@ -27,6 +27,84 @@ public class MapsClient {
         this.mapper = mapper;
     }
 
+    public AddressFull getAddressFull(double lat, double lon) {
+        return client
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/boogle-maps/addresses/search/findByLatAndLon")
+                        .queryParam("lat", lat)
+                        .queryParam("lon", lon)
+                        .queryParam("projection", "addressFullResponse")
+                        .build()
+                )
+                .retrieve().bodyToMono(AddressFull.class).block();
+    }
+
+    public Address getAddress(double lat, double lon) {
+        return client
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/boogle-maps/addresses/search/findByLatAndLon")
+                        .queryParam("lat", lat)
+                        .queryParam("lon", lon)
+                        .build()
+                )
+                .retrieve().bodyToMono(Address.class).block();
+    }
+
+    public boolean exists(double lat, double lon) {
+        return client
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/boogle-maps/addresses/search/existsByLatAndLon")
+                        .queryParam("lat", lat)
+                        .queryParam("lon", lon)
+                        .build()
+                )
+                .retrieve().bodyToMono(Boolean.class).block();
+    }
+
+    public Address post(AddressFull addressFull) {
+        return client
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/boogle-maps/addresses")
+                        .build()
+                )
+                .bodyValue(addressFull)
+                .retrieve().bodyToMono(Address.class).block();
+    }
+
+    public Address patch(Long id, AddressFull addressFull) {
+        return client
+                .put()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/boogle-maps/addresses/{id}")
+                        .build(id)
+                )
+                .bodyValue(addressFull)
+                .retrieve().bodyToMono(Address.class).block();
+    }
+
+    public static class CouldNotUpdateAddressException extends RuntimeException {
+    }
+
+    public Address updateAddress(Double lat, Double lon) {
+        try {
+            if (exists(lat, lon)) {
+                return patch(getAddressFull(lat, lon).getId(), new AddressFull(lat, lon));
+            }
+            else {
+                return post(new AddressFull(lat, lon));
+            }
+        }
+        catch (Exception e) {
+            log.warn("Map service is down");
+            e.printStackTrace();
+            throw new CouldNotUpdateAddressException();
+        }
+    }
+
     /**
      * Gets an address from the Maps client, given latitude and longitude.
      * @param location An object containing "lat" and "lon" of location
@@ -35,18 +113,8 @@ public class MapsClient {
      */
     public Location fillAddressOptional(Location location) {
         try {
-            Address address = client
-                    .get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/maps/")
-                            .queryParam("lat", location.getLat())
-                            .queryParam("lon", location.getLon())
-                            .build()
-                    )
-                    .retrieve().bodyToMono(Address.class).block();
-
+            Address address = getAddress(location.getLat(), location.getLon());
             mapper.map(Objects.requireNonNull(address), location);
-
             return location;
         } catch (Exception e) {
             log.warn("Map service is down");
