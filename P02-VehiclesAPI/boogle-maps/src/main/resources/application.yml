@@ -1,0 +1,7 @@
+spring:
+  data:
+    rest:
+      basePath: /boogle-maps
+
+server:
+  port: 9191
