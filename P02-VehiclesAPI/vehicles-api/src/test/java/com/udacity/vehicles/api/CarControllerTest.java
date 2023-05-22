@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.client.prices.PriceClient;
@@ -21,6 +22,7 @@ import com.udacity.vehicles.domain.manufacturer.model.Manufacturer;
 import com.udacity.vehicles.domain.car.service.CarService;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -29,10 +31,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.web.servlet.MockMvc;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonSerializer;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.GsonBuilder;
 
 import java.net.URI;
-import java.util.Collections;
+import java.util.*;
+import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.lang.reflect.Type;
 
 /**
  * Implements testing of the CarController class.
@@ -56,6 +72,24 @@ public class CarControllerTest {
 
     @MockBean
     private MapsClient mapsClient;
+
+    private static Gson gson;
+
+    @BeforeAll
+    public static void initialise() {
+        gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
+            @Override
+            public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                Instant instant = Instant.ofEpochMilli(json.getAsJsonPrimitive().getAsLong());
+                return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+            }
+        }).registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
+            @Override
+            public JsonElement serialize(LocalDateTime value, Type type, JsonSerializationContext jsonSerializationContext) {
+                return new Gson().toJsonTree(value.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+            }
+        }).create();
+    }
 
     /**
      * Creates pre-requisites for testing, such as an example car.
@@ -90,12 +124,18 @@ public class CarControllerTest {
      */
     @Test
     public void listCars() throws Exception {
-        /**
-         * TODO: Add a test to check that the `get` method works by calling
-         *   the whole list of vehicles. This should utilize the car from `getCar()`
-         *   below (the vehicle will be the first in the list).
-         */
-
+        Car car = getCar();
+        car.setId(1L);
+        JsonObject response = new JsonObject();
+        JsonObject carList = new JsonObject();
+        carList.add("carList", gson.toJsonTree(new ArrayList<>(Arrays.asList(car))));
+        response.add("_embedded", carList);
+        mvc.perform(
+                get(new URI("/cars")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("_embedded.carList").isArray())
+                .andExpect(content().json(gson.toJson(response)));
     }
 
     /**
@@ -104,10 +144,13 @@ public class CarControllerTest {
      */
     @Test
     public void findCar() throws Exception {
-        /**
-         * TODO: Add a test to check that the `get` method works by calling
-         *   a vehicle by ID. This should utilize the car from `getCar()` below.
-         */
+        Car car = getCar();
+        car.setId(1L);
+        mvc.perform(
+                get(new URI("/cars/" + car.getId())))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(content().json(gson.toJson(car)));
     }
 
     /**
@@ -116,11 +159,9 @@ public class CarControllerTest {
      */
     @Test
     public void deleteCar() throws Exception {
-        /**
-         * TODO: Add a test to check whether a vehicle is appropriately deleted
-         *   when the `delete` method is called from the Car Controller. This
-         *   should utilize the car from `getCar()` below.
-         */
+        mvc.perform(
+                delete(new URI("/cars/" + 1L)))
+                .andExpect(status().isNoContent());
     }
 
     /**

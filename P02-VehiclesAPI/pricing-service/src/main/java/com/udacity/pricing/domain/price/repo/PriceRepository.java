@@ -4,9 +4,9 @@ import com.udacity.pricing.domain.price.model.Price;
 import static com.udacity.pricing.util.Util.BaseRestRepository;
 import com.udacity.pricing.util.Util;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 
 import java.util.*;
 
+@Repository
 @RepositoryRestResource(collectionResourceRel = "price", path = "price")
 public interface PriceRepository extends BaseRestRepository<Price, Long> {
 
