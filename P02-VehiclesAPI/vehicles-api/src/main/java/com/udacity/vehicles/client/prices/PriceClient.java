@@ -64,7 +64,7 @@ public interface PriceClient {
         catch (Exception e) {
             log.warn("Price service is down");
             e.printStackTrace();
-            throw new CouldNotUpdateVehiclePrice();
+            throw new CouldNotUpdateVehiclePriceException();
         }
     }
 
