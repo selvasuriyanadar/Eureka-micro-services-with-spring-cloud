@@ -86,9 +86,6 @@ public class MapsClient {
                 .retrieve().bodyToMono(Address.class).block();
     }
 
-    public static class CouldNotUpdateAddressException extends RuntimeException {
-    }
-
     public Address updateAddress(Double lat, Double lon) {
         try {
             if (exists(lat, lon)) {

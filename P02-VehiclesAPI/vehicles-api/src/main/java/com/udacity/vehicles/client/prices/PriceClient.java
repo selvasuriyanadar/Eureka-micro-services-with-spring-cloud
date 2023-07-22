@@ -52,9 +52,6 @@ public interface PriceClient {
     @PutMapping(value="/{priceId}", consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
     public Price patch(@PathVariable("priceId") Long priceId, @RequestBody PriceFull price);
 
-    public static class CouldNotUpdateVehiclePrice extends RuntimeException {
-    }
-
     default Price updateVehiclePrice(Long vehicleId) {
         try {
             if (exists(vehicleId)) {

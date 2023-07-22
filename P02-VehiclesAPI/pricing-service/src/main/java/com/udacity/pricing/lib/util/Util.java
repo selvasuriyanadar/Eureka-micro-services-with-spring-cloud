@@ -43,6 +43,11 @@ public class Util {
 
     public interface BaseRestRepository<D, ID> extends Repository<D, ID> {
 
+        /**
+         * Creates and updates the price for a vehicle.
+         * @param price request body.
+         * @return price of the vehicle, or error that it was not found.
+         */
         public D save(D price);
 
         @RestResource(exported = false)

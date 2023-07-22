@@ -21,7 +21,7 @@ public interface PriceRepository extends BaseRestRepository<Price, Long> {
 
     /**
      * Gets the price for a requested vehicle.
-     * @param vehicleId ID number of the vehicle for which the price is requested
+     * @param vehicleId ID number of the vehicle for which the price is requested.
      * @return price of the vehicle, or error that it was not found.
      */
     public Optional<Price> findByVehicleId(@Param("vehicleId") Long vehicleId);
@@ -29,6 +29,11 @@ public interface PriceRepository extends BaseRestRepository<Price, Long> {
     @RestResource(exported = false)
     public boolean existsByVehicleIdAndPriceIdNot(Long vehicleId, Long priceId);
 
+    /**
+     * Checks whether a price entry for vehicle exists.
+     * @param vehicleId ID number of the vehicle for which the price is requeste.
+     * @return boolean value indicating the existence of a price for the vehicle requested.
+     */
     public boolean existsByVehicleId(Long vehicleId);
 
 }

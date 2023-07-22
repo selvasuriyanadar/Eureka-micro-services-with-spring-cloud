@@ -5,6 +5,7 @@ import com.udacity.vehicles.client.maps.MapsClient;
 import com.udacity.vehicles.domain.car.model.Car;
 import com.udacity.vehicles.domain.car.repo.CarRepository;
 import com.udacity.vehicles.domain.manufacturer.repo.ManufacturerRepository;
+import com.udacity.vehicles.domain.car.exception.CarNotFoundException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -62,12 +63,14 @@ public class CarService {
      */
     public Car save(Car car) {
         if (car.getId() != null) {
-            return repository.findById(car.getId())
+            Car carUpdated = repository.findById(car.getId())
                     .map(carToBeUpdated -> {
                         carToBeUpdated.setDetails(car.getDetails());
                         carToBeUpdated.setLocation(car.getLocation());
                         return repository.save(carToBeUpdated);
                     }).orElseThrow(CarNotFoundException::new);
+            mapsClient.updateAddress(carUpdated.getLocation().getLat(), carUpdated.getLocation().getLon());
+            return carUpdated;
         }
 
         Car newlyCreatedCar = repository.save(car);
