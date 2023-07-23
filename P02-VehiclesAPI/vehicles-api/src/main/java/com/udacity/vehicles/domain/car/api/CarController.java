@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
@@ -72,7 +73,12 @@ class CarController {
      * Creates a list to store any vehicles.
      * @return list of vehicles
      */
-    @Operation(summary = "Creates a list to store any vehicles.")
+    @Operation(summary = "Lists all vehicles.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Returns list of vehicles.",
+            content = { @Content(mediaType = "application/hal+json",
+            schema = @Schema(implementation = Car.class)) })
+    })
     @GetMapping
     CollectionModel<EntityModel<Car>> list() {
         return assembler.toCollectionModel(carService.list().stream().map(car -> complete(car)).toList());
@@ -83,8 +89,14 @@ class CarController {
      * @param id the id number of the given vehicle
      * @return all information for the requested vehicle
      */
+    @Operation(summary = "Gets information of a specific car by ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Returns all information for the requested vehicle.",
+            content = { @Content(mediaType = "application/hal+json",
+            schema = @Schema(implementation = Car.class)) })
+    })
     @GetMapping("/{id}")
-    EntityModel<Car> get(@PathVariable Long id) {
+    EntityModel<Car> get(@Parameter(description = "The id number of the given vehicle.") @PathVariable Long id) {
         return assembler.toModel(complete(carService.findById(id)));
     }
 
@@ -94,8 +106,14 @@ class CarController {
      * @return response that the new vehicle was added to the system
      * @throws URISyntaxException if the request contains invalid fields or syntax
      */
+    @Operation(summary = "Posts information to create a new vehicle in the system.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Returns response that the new vehicle was added to the system.",
+            content = { @Content(mediaType = "application/hal+json",
+            schema = @Schema(implementation = Car.class)) })
+    })
     @PostMapping
-    ResponseEntity<?> post(@RequestBody Car car) throws URISyntaxException {
+    ResponseEntity<?> post(@Parameter(description = "A new vehicle to add to the system.") @RequestBody Car car) throws URISyntaxException {
         EntityModel<Car> resource = assembler.toModel(complete(carService.save(car)));
         return ResponseEntity.created(new URI(resource.getLink(IanaLinkRelations.SELF).get().getHref())).body(resource);
     }
@@ -106,8 +124,15 @@ class CarController {
      * @param car The updated information about the related vehicle.
      * @return response that the vehicle was updated in the system
      */
+    @Operation(summary = "Updates the information of a vehicle in the system.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Returns response that the vehicle was updated in the system.",
+            content = { @Content(mediaType = "application/hal+json",
+            schema = @Schema(implementation = Car.class)) })
+    })
     @PutMapping("/{id}")
-    ResponseEntity<?> put(@PathVariable("id") Car car, @RequestBody Car request) {
+    ResponseEntity<?> put(@Parameter(description = "The ID number for which to update vehicle information.") @PathVariable("id") Car car,
+            @Parameter(description = "The updated information about the related vehicle.") @RequestBody Car request) {
         EntityModel<Car> resource = assembler.toModel(complete(carService.save(mapCarRequestToModel(request, car))));
         return ResponseEntity.ok(resource);
     }
@@ -117,8 +142,13 @@ class CarController {
      * @param id The ID number of the vehicle to remove.
      * @return response that the related vehicle is no longer in the system
      */
+    @Operation(summary = "Removes a vehicle from the system.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Returns response that the related vehicle is no longer in the system.",
+            content = @Content)
+    })
     @DeleteMapping("/{id}")
-    ResponseEntity<?> delete(@PathVariable Long id) {
+    ResponseEntity<?> delete(@Parameter(description = "The ID number of the vehicle to remove.") @PathVariable Long id) {
         carService.delete(id);
         return ResponseEntity.noContent().build();
     }
