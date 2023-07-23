@@ -1,5 +1,6 @@
 package com.udacity.vehicles.domain.car.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
@@ -19,15 +20,19 @@ public class Location {
     @NotNull
     private Double lon;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Transient
     private String address;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Transient
     private String city;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Transient
     private String state;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Transient
     private String zip;
 
@@ -43,8 +48,16 @@ public class Location {
         return lat;
     }
 
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
     public Double getLon() {
         return lon;
+    }
+
+    public void setLon(Double lon) {
+        this.lon = lon;
     }
 
     public String getAddress() {

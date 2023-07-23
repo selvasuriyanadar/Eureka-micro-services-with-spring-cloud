@@ -126,6 +126,7 @@ public class CarControllerTest {
     public void listCars() throws Exception {
         Car car = getCar();
         car.setId(1L);
+        car.getDetails().setManufacturer(null);
         JsonObject response = new JsonObject();
         JsonObject carList = new JsonObject();
         carList.add("carList", gson.toJsonTree(new ArrayList<>(Arrays.asList(car))));
@@ -146,6 +147,7 @@ public class CarControllerTest {
     public void findCar() throws Exception {
         Car car = getCar();
         car.setId(1L);
+        car.getDetails().setManufacturer(null);
         mvc.perform(
                 get(new URI("/cars/" + car.getId())))
                 .andExpect(status().isOk())

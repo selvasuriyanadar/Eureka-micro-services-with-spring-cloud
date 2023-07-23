@@ -9,6 +9,7 @@ import com.udacity.vehicles.domain.car.exception.CarNotFoundException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -61,22 +62,16 @@ public class CarService {
      * @param car A car object, which can be either new or existing
      * @return the new/updated car is stored in the repository
      */
-    public Car save(Car car) {
-        if (car.getId() != null) {
-            Car carUpdated = repository.findById(car.getId())
-                    .map(carToBeUpdated -> {
-                        carToBeUpdated.setDetails(car.getDetails());
-                        carToBeUpdated.setLocation(car.getLocation());
-                        return repository.save(carToBeUpdated);
-                    }).orElseThrow(CarNotFoundException::new);
-            mapsClient.updateAddress(carUpdated.getLocation().getLat(), carUpdated.getLocation().getLon());
-            return carUpdated;
-        }
+    public Car save(@Valid Car car) {
+        boolean idChanged = (car.getId() == null);
 
-        Car newlyCreatedCar = repository.save(car);
-        priceClient.updateVehiclePrice(newlyCreatedCar.getId());
-        mapsClient.updateAddress(newlyCreatedCar.getLocation().getLat(), newlyCreatedCar.getLocation().getLon());
-        return newlyCreatedCar;
+        repository.save(car);
+
+        if (idChanged) {
+            priceClient.updateVehiclePrice(car.getId());
+        }
+        mapsClient.updateAddress(car.getLocation().getLat(), car.getLocation().getLon());
+        return car;
     }
 
     /**

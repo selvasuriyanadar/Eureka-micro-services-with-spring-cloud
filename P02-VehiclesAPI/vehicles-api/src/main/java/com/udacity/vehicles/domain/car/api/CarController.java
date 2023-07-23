@@ -1,8 +1,16 @@
 package com.udacity.vehicles.domain.car.api;
 
 import com.udacity.vehicles.domain.car.model.Car;
+import com.udacity.vehicles.domain.car.model.Location;
+import com.udacity.vehicles.domain.car.model.Details;
 import com.udacity.vehicles.domain.car.service.CarService;
+import com.udacity.vehicles.util.BeanUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -21,7 +29,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
-import jakarta.validation.Valid;
 
 /**
  * Implements a REST-based controller for the Vehicles API.
@@ -38,13 +45,37 @@ class CarController {
         this.assembler = assembler;
     }
 
+    private Car complete(Car car) { car.getDetails().setManufacturerId(car.getDetails().getManufacturer().getCode());
+        return car;
+    }
+
+    private Car mapCarRequestToModel(Car request, Car car) {
+        Details detailsRequest = request.getDetails();
+        request.setDetails(null);
+        Location locationRequest = request.getLocation();
+        request.setLocation(null);
+        BeanUtil.transferIfNotNull(request, car);
+        if (detailsRequest != null) {
+            System.out.println(detailsRequest.getBody() + "------------" + detailsRequest.getModel());
+            BeanUtil.transferIfNotNull(detailsRequest, car.getDetails());
+            System.out.println(car.getDetails().getBody() + "------------" + car.getDetails().getModel());
+        }
+        if (locationRequest != null) {
+            System.out.println(locationRequest.getLat() + "------------" + locationRequest.getLon());
+            BeanUtil.transferIfNotNull(locationRequest, car.getLocation());
+            System.out.println(car.getLocation().getLat() + "------------" + car.getLocation().getLon());
+        }
+        return car;
+    }
+
     /**
      * Creates a list to store any vehicles.
      * @return list of vehicles
      */
+    @Operation(summary = "Creates a list to store any vehicles.")
     @GetMapping
     CollectionModel<EntityModel<Car>> list() {
-        return assembler.toCollectionModel(carService.list());
+        return assembler.toCollectionModel(carService.list().stream().map(car -> complete(car)).toList());
     }
 
     /**
@@ -54,7 +85,7 @@ class CarController {
      */
     @GetMapping("/{id}")
     EntityModel<Car> get(@PathVariable Long id) {
-        return assembler.toModel(carService.findById(id));
+        return assembler.toModel(complete(carService.findById(id)));
     }
 
     /**
@@ -64,8 +95,8 @@ class CarController {
      * @throws URISyntaxException if the request contains invalid fields or syntax
      */
     @PostMapping
-    ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
-        EntityModel<Car> resource = assembler.toModel(carService.save(car));
+    ResponseEntity<?> post(@RequestBody Car car) throws URISyntaxException {
+        EntityModel<Car> resource = assembler.toModel(complete(carService.save(car)));
         return ResponseEntity.created(new URI(resource.getLink(IanaLinkRelations.SELF).get().getHref())).body(resource);
     }
 
@@ -76,9 +107,8 @@ class CarController {
      * @return response that the vehicle was updated in the system
      */
     @PutMapping("/{id}")
-    ResponseEntity<?> put(@PathVariable Long id, @Valid @RequestBody Car car) {
-        car.setId(id);
-        EntityModel<Car> resource = assembler.toModel(carService.save(car));
+    ResponseEntity<?> put(@PathVariable("id") Car car, @RequestBody Car request) {
+        EntityModel<Car> resource = assembler.toModel(complete(carService.save(mapCarRequestToModel(request, car))));
         return ResponseEntity.ok(resource);
     }
 

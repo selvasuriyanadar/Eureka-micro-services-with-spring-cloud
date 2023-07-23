@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
@@ -23,13 +24,16 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Car {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue
     private Long id;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
@@ -47,6 +51,7 @@ public class Car {
     @Embedded
     private Location location = new Location(0d, 0d);
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Transient
     private String price;
 

@@ -2,9 +2,8 @@ package com.udacity.vehicles.domain.car.model;
 
 import com.udacity.vehicles.domain.manufacturer.model.Manufacturer;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.Valid;
@@ -22,10 +21,15 @@ public class Details {
     @NotBlank
     private String model;
 
+    @JsonProperty(value = "manufacturerId", access = JsonProperty.Access.WRITE_ONLY)
     @NotNull
     @ManyToOne
     @JoinColumn(name="code")
     private Manufacturer manufacturer;
+
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Integer manufacturerId;
 
     private Integer numberOfDoors;
 
@@ -63,6 +67,14 @@ public class Details {
 
     public void setManufacturer(Manufacturer manufacturer) {
         this.manufacturer = manufacturer;
+    }
+
+    public Integer getManufacturerId() {
+        return manufacturerId;
+    }
+
+    public void setManufacturerId(Integer manufacturerId) {
+        this.manufacturerId = manufacturerId;
     }
 
     public Integer getNumberOfDoors() {
